@@ -13,12 +13,10 @@ except ImportError:
 import sys
 import time
 import datetime
-import urllib3
+import requests
 import socket
 import math
 import json
-import write_profile
-import owm_daily
 
 LOGGER = polyinterface.LOGGER
 
@@ -33,7 +31,7 @@ class Controller(polyinterface.Controller):
         self.primary = self.address
         self.configured = False
         self.myConfig = {}
-        self.ip_address = None
+        self.ip_address = ''
 
         self.poly.onConfig(self.process_config)
 
@@ -73,6 +71,20 @@ class Controller(polyinterface.Controller):
     def shortPoll(self):
         self.query_conditions()
 
+    def rain_size(self, size):
+        if size == None:
+            return 0
+        if size == 1:
+            return 0.01 # inch
+        if size == 2:
+            return 0.2 # mm
+        if size == 3:
+            return 0.1 # mm
+        if size == 4:
+            return 0.001 # inch
+
+        return 0
+
     def query_conditions(self):
         # Query for the current conditions. We can do this fairly
         # frequently, probably as often as once a minute.
@@ -86,98 +98,12 @@ class Controller(polyinterface.Controller):
             LOGGER.info('Skipping connection because we aren\'t configured yet.')
             return
 
-        if False:
-            http = urllib3.PoolManager()
-            c = http.request('GET', request)
-            wdata = c.data
-            jdata = json.loads(wdata.decode('utf-8'))
-            c.close()
-            http.clear()
+        if True:
+            c = requests.get(request)
+            jdata = c.json()
         else:
-            jdata = {
-"data":
-{
-    "did":"001D0A700002",
-    "ts":1531754005,
-    "conditions": [
-    {
-            "lsid":48308,                                  
-            "data_structure_type":1,                       
-            "txid":1,                                      
-            "temp": 62.7,                                  
-            "hum":1.1,                                     
-            "dew_point": -0.3,                             
-            "wet_bulb":null,                               
-            "heat_index": 5.5,                             
-            "wind_chill": 6.0,                             
-            "thw_index": 5.5,                              
-            "thsw_index": 5.5,                             
-            "wind_speed_last":2,                           
-            "wind_dir_last":null,                          
-            "wind_speed_avg_last_1_min":4                  
-            "wind_dir_scalar_avg_last_1_min":15            
-            "wind_speed_avg_last_2_min":42606,             
-            "wind_dir_scalar_avg_last_2_min": 170.7,       
-            "wind_speed_hi_last_2_min":8,                  
-            "wind_dir_at_hi_speed_last_2_min":0.0,         
-            "wind_speed_avg_last_10_min":42606,            
-            "wind_dir_scalar_avg_last_10_min": 4822.5,     
-            "wind_speed_hi_last_10_min":8,                 
-            "wind_dir_at_hi_speed_last_10_min":0.0,        
-            "rain_size":2,                                 
-            "rain_rate_last":0,                            
-            "rain_rate_hi":null,                           
-            "rainfall_last_15_min":null,                   
-            "rain_rate_hi_last_15_min":0,                  
-            "rainfall_last_60_min":null,                   
-            "rainfall_last_24_hr":null,                    
-            "rain_storm":null,                             
-            "rain_storm_start_at":null,                    
-            "solar_rad":747,                               
-            "uv_index":5.5,                                
-            "rx_state":2,                                  
-            "trans_battery_flag":0,                        
-            "rainfall_daily":63,                           
-            "rainfall_monthly":63,                         
-            "rainfall_year":63,                            
-            "rain_storm_last":null,                        
-            "rain_storm_last_start_at":null,               
-            "rain_storm_last_end_at":null                  
-    },
-    {
-            "lsid":3187671188,
-            "data_structure_type":2,
-            "txid":3,
-            "temp_1":null,                                 
-            "temp_2":null,                                 
-            "temp_3":null,                                 
-            "temp_4":null,                                 
-            "moist_soil_1":null,                           
-            "moist_soil_2":null,                           
-            "moist_soil_3":null,                           
-            "moist_soil_4":null,                           
-            "wet_leaf_1":null,                             
-            "wet_leaf_2":null,                             
-            "rx_state":null,                               
-            "trans_battery_flag":null                      
-    },
-    {
-            "lsid":48307,
-            "data_structure_type":4,
-            "temp_in":78.0,                                
-            "hum_in":41.1,                                 
-            "dew_point_in":7.8,                            
-            "heat_index_in":8.4                            
-    },
-    {
-            "lsid":48306,
-            "data_structure_type":3,
-            "bar_sea_level":30.008,                       
-            "bar_trend": null,                            
-            "bar_absolute":30.008                        
-    }]
-},
-"error":null }
+            with open('sample.json') as json_file:
+                jdata = json.load(json_file)
 
         LOGGER.debug(jdata)
 
@@ -201,9 +127,28 @@ class Controller(polyinterface.Controller):
                 LOGGER.info('Found current conditions')
 
                 # Update node with values in <record>
-                self.setDriver('CLITEMP', float(record['temp']), True, False)
+                if record['temp'] != None:
+                    self.setDriver('CLITEMP', float(record['temp']), True, False)
+                self.setDriver('CLIHUM', float(record['hum']), True, False)
+                self.setDriver('DEWPT', float(record['dew_point']), True, False)
+                if record['wind_dir_last'] != None:
+                    self.setDriver('WINDDIR', float(record['wind_dir_last']), True, False)
+                if record['wet_bulb'] != None:
+                    self.setDriver('GV0', float(record['wet_bulb']), True, False)
+                self.setDriver('GV1', float(record['heat_index']), True, False)
+                self.setDriver('GV2', float(record['wind_chill']), True, False)
+                if record['wind_speed_last'] != None:
+                    self.setDriver('GV3', float(record['wind_speed_last']), True, False)
+                self.setDriver('GV4', float(record['rain_rate_last']), True, False)
+                self.setDriver('GV5', self.rain_size(record['rain_size']), True, False)
+                self.setDriver('GV6', float(record['solar_rad']), True, False)
+                self.setDriver('GV7', float(record['uv_index']), True, False)
+            elif record['data_structure_type'] == 3:  # pressure
+                self.setDriver('BARPRES', float(record['bar_sea_level']), True, False)
+                if record['bar_trend'] != None:
+                    self.setDriver('GV8', float(record['bar_trend']), True, False)
             else:
-                LOGGER.info('Skipping data type' + record['data_structure_type'])
+                LOGGER.info('Skipping data type %d' % record['data_structure_type'])
 
 
     def query(self):
@@ -254,18 +199,20 @@ class Controller(polyinterface.Controller):
     #
     drivers = [
             {'driver': 'ST', 'value': 1, 'uom': 2},   # node server status
-            {'driver': 'CLITEMP', 'value': 0, 'uom': 4},   # temperature
-            {'driver': 'CLIHUM', 'value': 0, 'uom': 22},   # humidity
-            {'driver': 'BARPRES', 'value': 0, 'uom': 118}, # pressure
-            {'driver': 'WINDDIR', 'value': 0, 'uom': 76},  # direction
-            {'driver': 'GV0', 'value': 0, 'uom': 4},       # max temp
-            {'driver': 'GV1', 'value': 0, 'uom': 4},       # min temp
-            {'driver': 'GV4', 'value': 0, 'uom': 49},      # wind speed
-            {'driver': 'GV6', 'value': 0, 'uom': 82},      # rain
-            {'driver': 'GV13', 'value': 0, 'uom': 25},     # climate conditions
-            {'driver': 'GV14', 'value': 0, 'uom': 22},     # cloud conditions
-            {'driver': 'GV15', 'value': 0, 'uom': 83},     # visibility
-            {'driver': 'GV16', 'value': 0, 'uom': 71},     # UV index
+            {'driver': 'CLITEMP', 'value': 0, 'uom': 17}, # temperature
+            {'driver': 'CLIHUM', 'value': 0, 'uom': 22},  # humidity
+            {'driver': 'BARPRES', 'value': 0, 'uom': 23}, # pressure
+            {'driver': 'WINDDIR', 'value': 0, 'uom': 76}, # direction
+            {'driver': 'DEWPT', 'value': 0, 'uom': 17},   # direction
+            {'driver': 'GV0', 'value': 0, 'uom': 17},     # wet bulb
+            {'driver': 'GV1', 'value': 0, 'uom': 17},     # heat index
+            {'driver': 'GV2', 'value': 0, 'uom': 17},     # wind chill
+            {'driver': 'GV3', 'value': 0, 'uom': 48},     # wind speed
+            {'driver': 'GV4', 'value': 0, 'uom': 24},     # rain rate
+            {'driver': 'GV5', 'value': 0, 'uom': 105},    # rain size
+            {'driver': 'GV6', 'value': 0, 'uom': 74},     # solar radiation
+            {'driver': 'GV7', 'value': 0, 'uom': 71},     # UV index
+            {'driver': 'GV8', 'value': 0, 'uom': 23},     # pressure trend
             ]
 
 

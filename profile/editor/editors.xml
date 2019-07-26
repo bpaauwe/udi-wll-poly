@@ -25,18 +25,10 @@
     <editor id="RAIN">
         <range uom="105" min="0" max="20000" prec="3" />
         <range uom="82"  min="0" max="10000" prec="1" />
-    </editor>
-    <editor id="inhr">
         <range uom="24" min="0" max="2000" prec="3" />
     </editor>
     <editor id="METERS">
         <range uom="38" min="0" max="200000" prec="0" />
-    </editor>
-    <editor id="COVERAGE">
-        <range uom="27" min="0" max="200000" prec="0" />
-    </editor>
-    <editor id="CONDITIONS">
-        <range uom="25" subset="200,804" nls="EN_CCCONDITION" />
     </editor>
     <editor id="INTENSITY">
         <range uom="70" min="0" max="100" prec="0" />
@@ -49,18 +41,18 @@
     <editor id="UV">
         <range uom="71" min="0" max="15" prec="1" />
     </editor>
-    <editor id="OZONE">
-        <range uom="56" min="0" max="500" prec="2" />
-    </editor>
-    <editor id="DAY">
-        <range uom="25" min="0" max="6" nls="EN_DAY" />
-    </editor>
-    <editor id="ET">
-        <range uom="106" min="0" max="100" prec="2" />
+    <editor id="TREND">
+        <range uom="25" min="0" max="2" nls="EN_TREND" />
     </editor>
     <editor id="DISTANCE">
         <range uom="116" min="0" max="500" prec="2" />
         <range uom="83"  min="0" max="10000" prec="1" />
+    </editor>
+    <editor id="RADIATION">
+        <range uom="74" min="0" max="3000" step="1" prec="1" />
+    </editor>
+    <editor id="SIZE">
+        <range uom="105" min="0" max="3" step="1" prec="3" />
     </editor>
 
 </editors>

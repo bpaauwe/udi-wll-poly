@@ -85,6 +85,10 @@ class Controller(polyinterface.Controller):
 
         return 0
 
+    def update(self, driver, value):
+        if value != None:
+            self.setDriver(driver, float(value), True, False)
+
     def query_conditions(self):
         # Query for the current conditions. We can do this fairly
         # frequently, probably as often as once a minute.
@@ -127,26 +131,38 @@ class Controller(polyinterface.Controller):
                 LOGGER.info('Found current conditions')
 
                 # Update node with values in <record>
-                if record['temp'] != None:
-                    self.setDriver('CLITEMP', float(record['temp']), True, False)
-                self.setDriver('CLIHUM', float(record['hum']), True, False)
-                self.setDriver('DEWPT', float(record['dew_point']), True, False)
-                if record['wind_dir_last'] != None:
-                    self.setDriver('WINDDIR', float(record['wind_dir_last']), True, False)
-                if record['wet_bulb'] != None:
-                    self.setDriver('GV0', float(record['wet_bulb']), True, False)
-                self.setDriver('GV1', float(record['heat_index']), True, False)
-                self.setDriver('GV2', float(record['wind_chill']), True, False)
-                if record['wind_speed_last'] != None:
-                    self.setDriver('GV3', float(record['wind_speed_last']), True, False)
-                self.setDriver('GV4', float(record['rain_rate_last']), True, False)
+                self.update('CLITEMP', record['temp'])
+                self.update('CLIHUM', record['hum'])
+                self.update('DEWPT', record['dew_point'])
+                self.update('WINDDIR', record['wind_dir_last'])
+                self.update('GV0', record['wet_bulb'])
+                self.update('GV1', record['heat_index'])
+                self.update('GV2', record['wind_chill'])
+                self.update('SPEED', record['wind_speed_last'])
+                self.update('GV4', record['rain_rate_last'])
+                self.update('SOLRAD', record['solar_rad'])
+                self.update('GV7', record['uv_index'])
+                self.update('GV9', record['wind_speed_hi_last_2_min'])
+                self.update('GV10', record['rainfall_daily'])
+
                 self.setDriver('GV5', self.rain_size(record['rain_size']), True, False)
-                self.setDriver('GV6', float(record['solar_rad']), True, False)
-                self.setDriver('GV7', float(record['uv_index']), True, False)
+
+                # wind gust? wind_speed_hi_last_2_min
+                # hi temperature
+                # low temperature
+                # rain today rainfall_daily  (in counts????)
             elif record['data_structure_type'] == 3:  # pressure
                 self.setDriver('BARPRES', float(record['bar_sea_level']), True, False)
                 if record['bar_trend'] != None:
                     self.setDriver('GV8', float(record['bar_trend']), True, False)
+            elif record['data_structure_type'] == 4:  # Indoor conditions
+                LOGGER.info(record)
+                self.update('GV11', record['temp_in'])
+                self.update('GV12', record['hum_in'])
+                # 'temp-in'
+                # 'hum-in'
+                # 'dew_point_in'
+                # 'heat_index_in'
             else:
                 LOGGER.info('Skipping data type %d' % record['data_structure_type'])
 
@@ -202,17 +218,21 @@ class Controller(polyinterface.Controller):
             {'driver': 'CLITEMP', 'value': 0, 'uom': 17}, # temperature
             {'driver': 'CLIHUM', 'value': 0, 'uom': 22},  # humidity
             {'driver': 'BARPRES', 'value': 0, 'uom': 23}, # pressure
+            {'driver': 'DEWPT', 'value': 0, 'uom': 17},   # dew point
             {'driver': 'WINDDIR', 'value': 0, 'uom': 76}, # direction
-            {'driver': 'DEWPT', 'value': 0, 'uom': 17},   # direction
+            {'driver': 'SPEED', 'value': 0, 'uom': 48},   # wind speed
+            {'driver': 'GV9', 'value': 0, 'uom': 48},     # wind gust
             {'driver': 'GV0', 'value': 0, 'uom': 17},     # wet bulb
             {'driver': 'GV1', 'value': 0, 'uom': 17},     # heat index
             {'driver': 'GV2', 'value': 0, 'uom': 17},     # wind chill
-            {'driver': 'GV3', 'value': 0, 'uom': 48},     # wind speed
             {'driver': 'GV4', 'value': 0, 'uom': 24},     # rain rate
             {'driver': 'GV5', 'value': 0, 'uom': 105},    # rain size
-            {'driver': 'GV6', 'value': 0, 'uom': 74},     # solar radiation
+            {'driver': 'SOLRAD', 'value': 0, 'uom': 74},  # solar radiation
             {'driver': 'GV7', 'value': 0, 'uom': 71},     # UV index
             {'driver': 'GV8', 'value': 0, 'uom': 23},     # pressure trend
+            {'driver': 'GV10', 'value': 0, 'uom': 55},    # daily rainfall
+            {'driver': 'GV11', 'value': 0, 'uom': 17},    # indoor temp
+            {'driver': 'GV12', 'value': 0, 'uom': 22},    # indoor humidity
             ]
 
 

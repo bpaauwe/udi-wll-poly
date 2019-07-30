@@ -11,12 +11,16 @@
       <st id="GV0" editor="TEMPERATURE" />
       <st id="GV1" editor="TEMPERATURE" />
       <st id="GV2" editor="TEMPERATURE" />
-      <st id="GV3" editor="SPEED" />
+      <st id="SPEED" editor="SPEED" />
       <st id="GV4" editor="RAIN" />
       <st id="GV5" editor="SIZE" />
-      <st id="GV6" editor="RADIATION" />
+      <st id="SOLRAD" editor="RADIATION" />
       <st id="GV7" editor="UV" />
       <st id="GV8" editor="PRESSURE" />
+      <st id="GV9" editor="SPEED" />
+      <st id="GV10" editor="COUNT" />
+      <st id="GV11" editor="TEMPERATURE" />
+      <st id="GV12" editor="PERCENT" />
     </sts>
     <cmds>
       <sends />

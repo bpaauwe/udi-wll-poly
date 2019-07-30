@@ -54,5 +54,9 @@
     <editor id="SIZE">
         <range uom="105" min="0" max="3" step="1" prec="3" />
     </editor>
+    <editor id="COUNT">
+	    <range uom="55" min="0" max="10000" step="1" prec="0" />
+    </editor>
+	    
 
 </editors>

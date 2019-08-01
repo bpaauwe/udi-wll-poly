@@ -57,6 +57,12 @@
     <editor id="COUNT">
 	    <range uom="55" min="0" max="10000" step="1" prec="0" />
     </editor>
+    <editor id="MOISTURE">
+        <range uom="87" min="0" max="1000" step="1" prec="3" />
+    </editor>
+    <editor id="LEAF">
+        <range uom="56" min="0" max="1000" step="1" prec="3" />
+    </editor>
 	    
 
 </editors>

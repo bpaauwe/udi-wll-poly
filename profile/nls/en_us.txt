@@ -22,11 +22,26 @@ ST-ctl-GV7-NAME = UV Index
 ST-ctl-GV8-NAME = Pressure Trend
 ST-ctl-GV9-NAME = Wind Gust
 ST-ctl-GV10-NAME = Daily Rain
-ST-ctl-GV11-NAME = Indoor Temperature
-ST-ctl-GV12-NAME = Indoor Humidity
 
-ST-ctl-GV3-NAME = Wind Speed
-ST-ctl-GV4-NAME = Rain Rate
+ND-indoor-NAME = Indoor Conditions
+ND-indoor-ICON = Weather
+ST-in-CLITEMP-NAME = Temperature
+ST-in-CLIHUM-NAME = Humidity
+ST-in-DEWPT-NAME = Dew Point
+ST-in-GV0-NAME = Heat Index
+
+ND-soil-NAME = Soil Conditions
+ND-soil-ICON = Weather
+ST-soil-GV0-NAME = Soil Temperature 1
+ST-soil-GV1-NAME = Soil Temperature 2
+ST-soil-GV2-NAME = Soil Temperature 3
+ST-soil-GV3-NAME = Soil Temperature 4
+ST-soil-GV4-NAME = Soil Moisture 1
+ST-soil-GV5-NAME = Soil Moisture 2
+ST-soil-GV6-NAME = Soil Moisture 3
+ST-soil-GV7-NAME = Soil Moisture 4
+ST-soil-GV8-NAME = Leaf Wetness 1
+ST-soil-GV9-NAME = Leaf Wetness 2
 
 EN_RAINTYPE-0 = None
 EN_RAINTYPE-1 = Rain

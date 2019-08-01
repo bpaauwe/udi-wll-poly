@@ -19,8 +19,6 @@
       <st id="GV8" editor="PRESSURE" />
       <st id="GV9" editor="SPEED" />
       <st id="GV10" editor="RAIN" />
-      <st id="GV11" editor="TEMPERATURE" />
-      <st id="GV12" editor="PERCENT" />
     </sts>
     <cmds>
       <sends />
@@ -30,6 +28,32 @@
         <cmd id="UPDATE_PROFILE" />
       </accepts>
     </cmds>
+  </nodeDef>
+
+  <nodeDef id="indoor" nodeType="139" nls="in">
+    <editors />
+    <sts>
+      <st id="CLITEMP" editor="TEMPERATURE" />
+      <st id="CLIHUM" editor="PERCENT" />
+      <st id="DEWPT" editor="TEMPERATURE" />
+      <st id="GV0" editor="TEMPERATURE" />
+    </sts>
+  </nodeDef>
+
+  <nodeDef id="soil" nodeType="139" nls="soil">
+    <editors />
+    <sts>
+      <st id="GV0" editor="TEMPERATURE" />
+      <st id="GV1" editor="TEMPERATURE" />
+      <st id="GV2" editor="TEMPERATURE" />
+      <st id="GV3" editor="TEMPERATURE" />
+      <st id="GV4" editor="MOISTURE" />
+      <st id="GV5" editor="MOISTURE" />
+      <st id="GV6" editor="MOISTURE" />
+      <st id="GV7" editor="MOISTURE" />
+      <st id="GV8" editor="LEAF" />
+      <st id="GV9" editor="LEAF" />
+    </sts>
   </nodeDef>
 
 </nodeDefs>

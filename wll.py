@@ -62,6 +62,10 @@ class Controller(polyinterface.Controller):
         # TODO: Discovery
         LOGGER.info('Node server started')
 
+        # Add indoor and soil nodes
+        self.addNode(IndoorNode(self, self.address, 'indoor', 'Indoor'))
+        self.addNode(SoilNode(self, self.address, 'soil', 'Soil'))
+
         # Do an initial query to get filled in as soon as possible
         self.query_conditions()
 
@@ -166,12 +170,41 @@ class Controller(polyinterface.Controller):
                     self.setDriver('GV8', float(record['bar_trend']), True, False)
             elif record['data_structure_type'] == 4:  # Indoor conditions
                 LOGGER.info(record)
-                self.update('GV11', record['temp_in'])
-                self.update('GV12', record['hum_in'])
+                # self.nodes['indoor'].setDriver(...
                 # 'temp-in'
                 # 'hum-in'
                 # 'dew_point_in'
                 # 'heat_index_in'
+                if record['temp_in'] != None:
+                    self.nodes['indoor'].setDriver('CLITEMP', float(record['temp_in']), True, False)
+                if record['hum_in'] != None:
+                    self.nodes['indoor'].setDriver('CLIHUM', float(record['hum_in']), True, False)
+                if record['dew_point_in'] != None:
+                    self.nodes['indoor'].setDriver('DEWPT', float(record['dew_point_in']), True, False)
+                if record['heat_index_in'] != None:
+                    self.nodes['indoor'].setDriver('GV0', float(record['heat_index_in']), True, False)
+            elif record['data_structure_type'] == 2:  # Soil Conditions
+                # self.nodes['soil'].setDriver(...
+                if record['temp_1'] != None:
+                    self.nodes['soil'].setDriver('GV0', float(record['temp_1']), True, False)
+                if record['temp_2'] != None:
+                    self.nodes['soil'].setDriver('GV1', float(record['temp_2']), True, False)
+                if record['temp_3'] != None:
+                    self.nodes['soil'].setDriver('GV2', float(record['temp_3']), True, False)
+                if record['temp_4'] != None:
+                    self.nodes['soil'].setDriver('GV3', float(record['temp_4']), True, False)
+                if record['moist_soil_1'] != None:
+                    self.nodes['soil'].setDriver('GV4', float(record['moist_soil_1']), True, False)
+                if record['moist_soil_2'] != None:
+                    self.nodes['soil'].setDriver('GV5', float(record['moist_soil_2']), True, False)
+                if record['moist_soil_3'] != None:
+                    self.nodes['soil'].setDriver('GV6', float(record['moist_soil_3']), True, False)
+                if record['moist_soil_4'] != None:
+                    self.nodes['soil'].setDriver('GV7', float(record['moist_soil_4']), True, False)
+                if record['wet_leaf_1'] != None:
+                    self.nodes['soil'].setDriver('GV8', float(record['wet_leaf_1']), True, False)
+                if record['wet_leaf_2'] != None:
+                    self.nodes['soil'].setDriver('GV9', float(record['wet_leaf_2']), True, False)
             else:
                 LOGGER.info('Skipping data type %d' % record['data_structure_type'])
 
@@ -244,6 +277,30 @@ class Controller(polyinterface.Controller):
             {'driver': 'GV12', 'value': 0, 'uom': 22},    # indoor humidity
             ]
 
+class IndoorNode(polyinterface.Node):
+    id = 'indoor'
+    drivers = [
+	{'driver': 'CLITEMP', 'value': 0, 'uom': 17},
+	{'driver': 'CLIHUM', 'value': 0, 'uom': 22},
+	{'driver': 'DEWPT', 'value': 0, 'uom': 17},
+	{'driver': 'GV0', 'value': 0, 'uom': 17},
+	]
+
+
+class SoilNode(polyinterface.Node):
+    id = 'soil'
+    drivers = [
+	{'driver': 'GV0', 'value': 0, 'uom': 17},
+	{'driver': 'GV1', 'value': 0, 'uom': 17},
+	{'driver': 'GV2', 'value': 0, 'uom': 17},
+	{'driver': 'GV3', 'value': 0, 'uom': 17},
+	{'driver': 'GV4', 'value': 0, 'uom': 87},
+	{'driver': 'GV5', 'value': 0, 'uom': 87},
+	{'driver': 'GV6', 'value': 0, 'uom': 87},
+	{'driver': 'GV7', 'value': 0, 'uom': 87},
+	{'driver': 'GV8', 'value': 0, 'uom': 56},
+	{'driver': 'GV9', 'value': 0, 'uom': 56},
+	]
 
     
 if __name__ == "__main__":
@@ -255,4 +312,3 @@ if __name__ == "__main__":
     except (KeyboardInterrupt, SystemExit):
         sys.exit(0)
         
-

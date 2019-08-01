@@ -139,11 +139,20 @@ class Controller(polyinterface.Controller):
                 self.update('GV1', record['heat_index'])
                 self.update('GV2', record['wind_chill'])
                 self.update('SPEED', record['wind_speed_last'])
-                self.update('GV4', record['rain_rate_last'])
                 self.update('SOLRAD', record['solar_rad'])
                 self.update('GV7', record['uv_index'])
                 self.update('GV9', record['wind_speed_hi_last_2_min'])
-                self.update('GV10', record['rainfall_daily'])
+
+                # rainfall is in counts and 1 count = 0.01 inches
+                #self.update('GV4', record['rain_rate_last'])
+                #self.update('GV10', record['rainfall_daily'])
+                if record['rainfall_daily'] != None:
+                    rain = 0.01 * int(record['rainfall_daily'])
+                    self.setDriver('GV10', rain, True, False)
+
+                if record['rain_rate_last'] != None:
+                    rain = 0.01 * int(record['rain_rate_last'])
+                    self.setDriver('RAINRT', rain, True, False)
 
                 self.setDriver('GV5', self.rain_size(record['rain_size']), True, False)
 
@@ -225,12 +234,12 @@ class Controller(polyinterface.Controller):
             {'driver': 'GV0', 'value': 0, 'uom': 17},     # wet bulb
             {'driver': 'GV1', 'value': 0, 'uom': 17},     # heat index
             {'driver': 'GV2', 'value': 0, 'uom': 17},     # wind chill
-            {'driver': 'GV4', 'value': 0, 'uom': 24},     # rain rate
+            {'driver': 'RAINRT', 'value': 0, 'uom': 24},     # rain rate
             {'driver': 'GV5', 'value': 0, 'uom': 105},    # rain size
             {'driver': 'SOLRAD', 'value': 0, 'uom': 74},  # solar radiation
             {'driver': 'GV7', 'value': 0, 'uom': 71},     # UV index
             {'driver': 'GV8', 'value': 0, 'uom': 23},     # pressure trend
-            {'driver': 'GV10', 'value': 0, 'uom': 55},    # daily rainfall
+            {'driver': 'GV10', 'value': 0, 'uom': 105},   # daily rainfall
             {'driver': 'GV11', 'value': 0, 'uom': 17},    # indoor temp
             {'driver': 'GV12', 'value': 0, 'uom': 22},    # indoor humidity
             ]

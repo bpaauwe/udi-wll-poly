@@ -10,13 +10,12 @@ ST-ctl-CLIHUM-NAME = Humidity
 ST-ctl-BARPRES-NAME = Pressure
 ST-ctl-DEWPT-NAME = Dew Point
 ST-ctl-WINDDIR-NAME = Wind Direction
-ST-CTL-SPEED-NAME = Wind Speed
-ST-CTL-SOLRAD-NAME = Solar Radiation
+ST-ctl-SPEED-NAME = Wind Speed
+ST-ctl-SOLRAD-NAME = Solar Radiation
+ST-ctl-RAINRT-NAME = Rain Rate
 ST-ctl-GV0-NAME = Wet Bulb
 ST-ctl-GV1-NAME = Heat Index
 ST-ctl-GV2-NAME = Wind Chill
-ST-ctl-GV3-NAME = Wind Speed
-ST-ctl-GV4-NAME = Rain Rate
 ST-ctl-GV5-NAME = Rain Size
 ST-ctl-GV6-NAME = Solar Radiation
 ST-ctl-GV7-NAME = UV Index
@@ -25,6 +24,9 @@ ST-ctl-GV9-NAME = Wind Gust
 ST-ctl-GV10-NAME = Daily Rain
 ST-ctl-GV11-NAME = Indoor Temperature
 ST-ctl-GV12-NAME = Indoor Humidity
+
+ST-ctl-GV3-NAME = Wind Speed
+ST-ctl-GV4-NAME = Rain Rate
 
 EN_RAINTYPE-0 = None
 EN_RAINTYPE-1 = Rain

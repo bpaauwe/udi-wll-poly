@@ -32,6 +32,8 @@ class Controller(polyinterface.Controller):
         self.configured = False
         self.myConfig = {}
         self.ip_address = ''
+        self.has_soil = False
+        self.has_indoor = False
 
         self.poly.onConfig(self.process_config)
 
@@ -50,6 +52,7 @@ class Controller(polyinterface.Controller):
                 if changed:
                     self.removeNoticesAll()
                     self.configured = True
+                    self.discover_nodes()
 
                     if self.ip_address == '':
                         self.addNotice("WeatherLink IP Address parameter must be set");
@@ -62,9 +65,13 @@ class Controller(polyinterface.Controller):
         # TODO: Discovery
         LOGGER.info('Node server started')
 
-        # Add indoor and soil nodes
-        self.addNode(IndoorNode(self, self.address, 'indoor', 'Indoor'))
-        self.addNode(SoilNode(self, self.address, 'soil', 'Soil'))
+        self.discover_nodes()
+        if self.has_indoor:
+            LOGGER.info('Creating node for indoor conditions')
+            self.addNode(IndoorNode(self, self.address, 'indoor', 'Indoor'))
+        if self.has_soil:
+            LOGGER.info('Creating node for soil conditions')
+            self.addNode(SoilNode(self, self.address, 'soil', 'Soil'))
 
         # Do an initial query to get filled in as soon as possible
         self.query_conditions()
@@ -93,6 +100,18 @@ class Controller(polyinterface.Controller):
         if value != None:
             self.setDriver(driver, float(value), True, False)
 
+    def discover_nodes(self):
+        if not self.configured:
+            return
+        request = 'http://' + self.ip_address + '/v1/current_conditions'
+        c = requests.get(request)
+        jdata = c.json()
+        for record in jdata['data']['conditions']:
+            if record['data_structure_type'] == 2:
+                self.has_soil = True
+            elif record['data_structure_type'] == 1:
+                self.has_indoor = True
+
     def query_conditions(self):
         # Query for the current conditions. We can do this fairly
         # frequently, probably as often as once a minute.
@@ -106,12 +125,8 @@ class Controller(polyinterface.Controller):
             LOGGER.info('Skipping connection because we aren\'t configured yet.')
             return
 
-        if True:
-            c = requests.get(request)
-            jdata = c.json()
-        else:
-            with open('sample.json') as json_file:
-                jdata = json.load(json_file)
+        c = requests.get(request)
+        jdata = c.json()
 
         LOGGER.debug(jdata)
 
@@ -168,7 +183,7 @@ class Controller(polyinterface.Controller):
                 self.setDriver('BARPRES', float(record['bar_sea_level']), True, False)
                 if record['bar_trend'] != None:
                     self.setDriver('GV8', float(record['bar_trend']), True, False)
-            elif record['data_structure_type'] == 4:  # Indoor conditions
+            elif record['data_structure_type'] == 4 and self.has_indoor:  # Indoor conditions
                 LOGGER.info(record)
                 # self.nodes['indoor'].setDriver(...
                 # 'temp-in'
@@ -183,7 +198,7 @@ class Controller(polyinterface.Controller):
                     self.nodes['indoor'].setDriver('DEWPT', float(record['dew_point_in']), True, False)
                 if record['heat_index_in'] != None:
                     self.nodes['indoor'].setDriver('GV0', float(record['heat_index_in']), True, False)
-            elif record['data_structure_type'] == 2:  # Soil Conditions
+            elif record['data_structure_type'] == 2 and self.has_soil:  # Soil Conditions
                 # self.nodes['soil'].setDriver(...
                 if record['temp_1'] != None:
                     self.nodes['soil'].setDriver('GV0', float(record['temp_1']), True, False)

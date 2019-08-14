@@ -48,6 +48,9 @@ The nodeserver keeps track of the version number and when a profile rebuild is n
 
 # Release Notes
 
+- 1.0.3 08/14/2019
+   - Use rain size to calculate rainfall.
+   - Replace rain size value with yearly rainfall
 - 1.0.2 08/04/2019
    - Add indoor and soil condition nodes
 - 1.0.0 07/24/2019

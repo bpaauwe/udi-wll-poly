@@ -163,17 +163,34 @@ class Controller(polyinterface.Controller):
                 self.update('GV9', record['wind_speed_hi_last_2_min'])
 
                 # rainfall is in counts and 1 count = 0.01 inches
-                #self.update('GV4', record['rain_rate_last'])
-                #self.update('GV10', record['rainfall_daily'])
+                # rain size is the tipping bucket calibration. 
+                #  size = 1 means 0.01 inches
+                #  size = 2 means 0.2 mm
+                #  size = 3 means 0.1 mm
+                #  size = 4 means 0.001 inches
+                if record['rain_size'] == 1:
+                    rain_cal = 0.01
+                elif record['rain_size'] == 2:
+                    rain_cal = 0.0787
+                elif record['rain_size'] == 3:
+                    rain_cal = 0.0394
+                elif record['rain_size'] == 4:
+                    rain_cal = 0.001
+                else:
+                    rain_cal = 0.01
+                #self.setDriver('GV5', self.rain_size(record['rain_size']), True, False)
                 if record['rainfall_daily'] != None:
-                    rain = 0.01 * int(record['rainfall_daily'])
+                    rain = rain_cal * int(record['rainfall_daily'])
                     self.setDriver('GV10', rain, True, False)
 
                 if record['rain_rate_last'] != None:
-                    rain = 0.01 * int(record['rain_rate_last'])
+                    rain = rain_cal * int(record['rain_rate_last'])
                     self.setDriver('RAINRT', rain, True, False)
 
-                self.setDriver('GV5', self.rain_size(record['rain_size']), True, False)
+                if record['rainfall_year'] != None:
+                    rain = rain_cal * int(record['rainfall_year'])
+                    self.setDriver('GV5', rain, True, False)
+
 
                 # wind gust? wind_speed_hi_last_2_min
                 # hi temperature

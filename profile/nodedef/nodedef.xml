@@ -13,7 +13,7 @@
       <st id="GV2" editor="TEMPERATURE" />
       <st id="SPEED" editor="SPEED" />
       <st id="RAINRT" editor="RAIN" />
-      <st id="GV5" editor="SIZE" />
+      <st id="GV5" editor="RAIN" />
       <st id="SOLRAD" editor="RADIATION" />
       <st id="GV7" editor="UV" />
       <st id="GV8" editor="PRESSURE" />

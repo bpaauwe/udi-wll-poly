@@ -197,7 +197,8 @@ class Controller(polyinterface.Controller):
                 # low temperature
                 # rain today rainfall_daily  (in counts????)
             elif record['data_structure_type'] == 3:  # pressure
-                self.setDriver('BARPRES', float(record['bar_sea_level']), True, False)
+                if record['bar_sea_level'] != None:
+                    self.setDriver('BARPRES', float(record['bar_sea_level']), True, False)
                 if record['bar_trend'] != None:
                     self.setDriver('GV8', float(record['bar_trend']), True, False)
             elif record['data_structure_type'] == 4 and self.has_indoor:  # Indoor conditions

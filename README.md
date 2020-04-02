@@ -48,6 +48,8 @@ The nodeserver keeps track of the version number and when a profile rebuild is n
 
 # Release Notes
 
+- 1.0.4 04/02/2020
+   - check for sealevel pressure before trying to use it.
 - 1.0.3 08/14/2019
    - Use rain size to calculate rainfall.
    - Replace rain size value with yearly rainfall

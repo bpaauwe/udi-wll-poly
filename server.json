@@ -12,8 +12,8 @@
     "credits": [ {
 	"title": "WeatherLink: A node server for weather data",
     	"author": "Bob Paauwe",
-    	"version": "1.0.3",
-    	"date": "August 14, 2019",
+    	"version": "1.0.4",
+    	"date": "April 2, 2020",
     	"source": "https://github.com/bpaauwe/udi-wll-poly",
 	"license": "https://github.com/bpaauwe/udi-wll-poly/LICENSE"
 	} ]

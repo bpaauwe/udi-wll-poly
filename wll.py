@@ -125,7 +125,13 @@ class Controller(polyinterface.Controller):
             LOGGER.info('Skipping connection because we aren\'t configured yet.')
             return
 
-        c = requests.get(request)
+        try:
+            c = requests.get(request)
+        except Exception as e:
+            LOGGER.error('Request for data from WLL failed.')
+            LOGGER.error(e.msg);
+            return
+
         jdata = c.json()
 
         LOGGER.debug(jdata)

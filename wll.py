@@ -129,7 +129,6 @@ class Controller(polyinterface.Controller):
             c = requests.get(request)
         except Exception as e:
             LOGGER.error('Request for data from WLL failed.')
-            LOGGER.error(e.msg);
             return
 
         jdata = c.json()

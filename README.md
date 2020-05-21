@@ -48,6 +48,9 @@ The nodeserver keeps track of the version number and when a profile rebuild is n
 
 # Release Notes
 
+- 1.0.6 05/21/2020
+   - Remove debug message for exception as ConnectionError exception doesn't
+     have a .msg object
 - 1.0.5 05/08/2020
    - trap errors when making request to WLL.
 - 1.0.4 04/02/2020
